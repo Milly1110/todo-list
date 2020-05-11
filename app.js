@@ -3,9 +3,12 @@ const express = require('express')
 const app = express()
 const port = 3000
 const mongoose = require('mongoose')
+const exphbs = require('express-handlebars') //引用express-handlebars並命名為exphbs
 
 
 // setting template engine
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))  //建立一個名為hbs的樣板引擎並傳入exphbs與相關參數
+app.set('view engine', 'hbs')  //啟用樣板引擎hbs
 
 //setting link to mongoDB
 mongoose.connect('mongodb://localhost/todo-list', { useNewUrlParser: true, useUnifiedTopology: true }) //設定連線到mongoDB
@@ -21,7 +24,7 @@ db.once('open', () => {
 
 // setting routes
 app.get('/', (req, res) => {
-  res.send('Welcome')
+  res.render('index')
 })
 // starts the express server and listening for conections
 app.listen(port, () => {
