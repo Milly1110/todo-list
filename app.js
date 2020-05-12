@@ -3,7 +3,8 @@ const express = require('express')
 const app = express()
 const port = 3000
 const mongoose = require('mongoose')
-const exphbs = require('express-handlebars') //引用express-handlebars並命名為exphbs
+const exphbs = require('express-handlebars')  //引用express-handlebars並命名為exphbs
+const Todo = require('./models/todo') //載入Todo model
 
 
 // setting template engine
@@ -24,7 +25,11 @@ db.once('open', () => {
 
 // setting routes
 app.get('/', (req, res) => {
-  res.render('index')
+  Todo.find()  //取出Todo model裡的所有資料
+    .lean()  //把mongoose的model物件轉換成JavaScript資料陣列
+    .then(todos => res.render('index', { todos }))  //將資料傳給index樣板
+    .catch(error => console.error(error))  //錯誤處理
+  // res.render('index')
 })
 // starts the express server and listening for conections
 app.listen(port, () => {
