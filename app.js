@@ -14,6 +14,7 @@ app.set('view engine', 'hbs')  //啟用樣板引擎hbs
 
 //用app.use規定每一筆請求都需要透過body-parser進行前置處理
 app.use(bodyParser.urlencoded({ extended: true }))
+
 //setting link to mongoDB
 mongoose.connect('mongodb://localhost/todo-list', { useNewUrlParser: true, useUnifiedTopology: true }) //設定連線到mongoDB
 const db = mongoose.connection //取得資料庫連線狀態
@@ -40,9 +41,17 @@ app.post('/todos', (req, res) => {
     .then(() => res.redirect('/'))  //新增完成後導回首頁
     .catch(error => console.log(error))  //錯誤處理
 })
-
+//設定新增todo的路由
 app.get('/todos/new', (req, res) => {
   return res.render('new')
+})
+//設定detail的路由
+app.get('/todos/:id', (req, res) => {
+  const id = req.params.id
+  return Todo.findById(id)  //從資料庫查找出資料
+    .lean()  //把資料轉換成單純的JS物件
+    .then(todo => res.render('detail', { todo }))  //把資料送給前端樣板
+    .catch(error => console.log(error))  //錯誤處理
 })
 
 // starts the express server and listening for conections
