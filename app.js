@@ -72,6 +72,14 @@ app.post('/todos/:id/edit', (req, res) => {
     .then(() => res.redirect(`/todos/${id}`))  //儲存成功，導向首頁
     .catch(error => console.log(error))  //錯誤處理
 })
+//設定delete的路由
+app.post('/todos/:id/delete', (req, res) => {
+  const id = req.params.id  //取得網址上的識別碼
+  return Todo.findById(id)  //資料庫查詢成功後，把資料放進todo
+    .then(todo => todo.remove())  //刪除這筆資料
+    .then(() => res.redirect('/'))  //成功刪除以後，重新呼叫首頁
+    .catch(error => console.log(error))
+})
 
 // starts the express server and listening for conections
 app.listen(port, () => {
