@@ -50,7 +50,26 @@ app.get('/todos/:id', (req, res) => {
   const id = req.params.id
   return Todo.findById(id)  //從資料庫查找出資料
     .lean()  //把資料轉換成單純的JS物件
-    .then(todo => res.render('detail', { todo }))  //把資料送給前端樣板
+    .then(todo => res.render('detail', { todo }))  //把資料送給前端樣板(detail.hbs)
+    .catch(error => console.log(error))  //錯誤處理
+})
+//設定edit的路由
+app.get('/todos/:id/edit', (req, res) => {
+  const id = req.params.id
+  return Todo.findById(id)  //從資料庫查找資料
+    .lean()  //把資料轉換成單純的JS物件
+    .then(todo => res.render('edit', { todo }))  //把資料傳送給前端樣板(edit.hbs)
+    .catch(error => console.log(error))  //錯誤處理
+})
+app.post('/todos/:id/edit', (req, res) => {
+  const id = req.params.id  //資料來自客戶端，id要從網址上取下
+  const name = req.body.name  //資料來自客戶端，name要從表單拿出來
+  return Todo.findById(id)  //查詢資料
+    .then(todo => {   //查詢成功，修改後重新儲存資料
+      todo.name = name
+      return todo.save()
+    })
+    .then(() => res.redirect(`/todos/${id}`))  //儲存成功，導向首頁
     .catch(error => console.log(error))  //錯誤處理
 })
 
