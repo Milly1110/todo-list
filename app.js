@@ -1,11 +1,12 @@
 // include packages and define server related variables
 const express = require('express')
 const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
+
 const exphbs = require('express-handlebars')  //引用express-handlebars並命名為exphbs
 const Todo = require('./models/todo') //載入Todo model
 const methodOverride = require('method-override')  //載入method-override
 const routes = require('./routes')
+require('./config/mongoose') //連線只要被執行，所以不需要設定變數
 const app = express()
 const port = 3000
 
@@ -22,17 +23,7 @@ app.use(methodOverride('_method'))
 //將request導入路由器
 app.use(routes)
 
-//setting link to mongoDB
-mongoose.connect('mongodb://localhost/todo-list', { useNewUrlParser: true, useUnifiedTopology: true }) //設定連線到mongoDB
-const db = mongoose.connection //取得資料庫連線狀態
-//連線失敗
-db.on('error', () => {
-  console.log('mongodb error!')
-})
-//連線成功
-db.once('open', () => {
-  console.log('mongodb connected!')
-})
+
 
 // setting routes
 
