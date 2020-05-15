@@ -31,6 +31,7 @@ db.once('open', () => {
 app.get('/', (req, res) => {
   Todo.find()  //取出Todo model裡的所有資料
     .lean()  //把mongoose的model物件轉換成JavaScript資料陣列
+    .sort({ _id: 'desc' })  //正序為asc,反序為desc
     .then(todos => res.render('index', { todos }))  //將資料傳給index樣板
     .catch(error => console.log(error))  //錯誤處理
   // res.render('index')
