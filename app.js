@@ -1,12 +1,12 @@
 // include packages and define server related variables
 const express = require('express')
-const app = express()
-const port = 3000
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')  //引用express-handlebars並命名為exphbs
 const Todo = require('./models/todo') //載入Todo model
-
+const methodOverride = require('method-override')  //載入method-override
+const app = express()
+const port = 3000
 
 // setting template engine
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))  //建立一個名為hbs的樣板引擎並傳入exphbs與相關參數
@@ -14,6 +14,9 @@ app.set('view engine', 'hbs')  //啟用樣板引擎hbs
 
 //用app.use規定每一筆請求都需要透過body-parser進行前置處理
 app.use(bodyParser.urlencoded({ extended: true }))
+
+//用app.use讓每一筆路由都會透過method-override進行前置處理
+app.use(methodOverride('_method'))
 
 //setting link to mongoDB
 mongoose.connect('mongodb://localhost/todo-list', { useNewUrlParser: true, useUnifiedTopology: true }) //設定連線到mongoDB
@@ -62,7 +65,7 @@ app.get('/todos/:id/edit', (req, res) => {
     .then(todo => res.render('edit', { todo }))  //把資料傳送給前端樣板(edit.hbs)
     .catch(error => console.log(error))  //錯誤處理
 })
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
   const id = req.params.id  //資料來自客戶端，id要從網址上取下
   // const name = req.body.name  //資料來自客戶端，name要從表單拿出來
   const { name, isDone } = req.body  //解構賦值；將物件屬性分別取出存成變數
@@ -76,7 +79,7 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))  //錯誤處理
 })
 //設定delete的路由
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
   const id = req.params.id  //取得網址上的識別碼
   return Todo.findById(id)  //資料庫查詢成功後，把資料放進todo
     .then(todo => todo.remove())  //刪除這筆資料
