@@ -1,4 +1,7 @@
 <form action="/todos/{{todo._id}}/edit" method="post">
+  <input type="checkbox" name="isDone" {{#if todo.isDone}}checked{{/if}}>
+  {{!-- 如果isDone的狀態存在，則checked --}}
+
   <input type="text" placeholder="edit here" name="name" value="{{{todo.name}}}">
   <button type="submit">Save</button>
   <a href="/">back</a>

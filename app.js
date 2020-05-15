@@ -63,10 +63,12 @@ app.get('/todos/:id/edit', (req, res) => {
 })
 app.post('/todos/:id/edit', (req, res) => {
   const id = req.params.id  //資料來自客戶端，id要從網址上取下
-  const name = req.body.name  //資料來自客戶端，name要從表單拿出來
+  // const name = req.body.name  //資料來自客戶端，name要從表單拿出來
+  const { name, isDone } = req.body  //解構賦值；將物件屬性分別取出存成變數
   return Todo.findById(id)  //查詢資料
     .then(todo => {   //查詢成功，修改後重新儲存資料
       todo.name = name
+      todo.isDone = isDone === 'on'
       return todo.save()
     })
     .then(() => res.redirect(`/todos/${id}`))  //儲存成功，導向首頁
