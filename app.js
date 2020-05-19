@@ -8,7 +8,7 @@ const methodOverride = require('method-override')  //載入method-override
 const routes = require('./routes')
 require('./config/mongoose') //連線只要被執行，所以不需要設定變數
 const app = express()
-const port = 3000
+const PORT = process.env.PORT || 3000 //如果在Heroku環境則使用process.env.PORT，在本地環境則使用3000
 
 // setting template engine
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))  //建立一個名為hbs的樣板引擎並傳入exphbs與相關參數
@@ -29,6 +29,6 @@ app.use(routes)
 
 
 // starts the express server and listening for conections
-app.listen(port, () => {
-  console.log(`Express is listening on http://localhost:${port}`)
+app.listen(PORT, () => {
+  console.log(`Express is listening on http://localhost:${PORT}`)
 })
